@@ -1,29 +1,25 @@
-import React, { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Profile from './pages/Profile';
-import './designs/css/main.css';
+import { Routes, Route, Navigate } from "react-router-dom"
+import { useSelector } from "react-redux"
+import Header from "./components/Header/Header"
+import Footer from "./components/Footer/Footer"
+import Home from "./pages/Home/Home"
+import SignIn from "./pages/Signin/SignIn"
+import User from "./pages/User/User"
+import SignUp from "./pages/SignUp/SignUp"
 
-function App() {
-   const [isLoggedIn, setIsLoggedIn] = useState(false);
-   const [userName, setUserName] = useState('');
- 
-   return (
-     <div className="App">
-       <Header isLoggedIn={isLoggedIn} userName={userName} />
-       <main className="main">
-         <Routes>
-           <Route path="/" element={<Home />} />
-           <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} setUserName={setUserName} />} />
-           <Route path="/profile" element={<Profile />} />
-         </Routes>
-       </main>
-       <Footer />
-     </div>
-   );
- }
-
-export default App;
+export default function App() {
+	const token = useSelector(state => state.userAuth.token)
+  	return (
+		<div>
+			<Header />
+			<Routes>
+				<Route path="/" element={<Home />} />
+				<Route path="/sign-in" element={<SignIn />} />
+				<Route path="/user" element={token ? <User /> : <Navigate to="/sign-in" />} />
+				<Route path="/sign-up" element={<SignUp />} />
+				<Route path="*" element={<Home />} />
+			</Routes>
+			<Footer />
+	 	</div>
+  	)
+}
