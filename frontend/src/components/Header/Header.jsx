@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../designs/img/argentBankLogo.png';
-import '../designs/css/main.css';
+import logo from '../../assets/img/argentBankLogo.webp';
+import '../../assets/style/main.css';
 
 const Header = ({ isLoggedIn, userName }) => (
   <nav className="main-nav">

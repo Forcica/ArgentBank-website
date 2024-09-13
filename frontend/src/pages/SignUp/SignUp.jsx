@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { setLogOut } from "../../redux/reducers/userAuthSlice"
-import TextInput from "../../components/TextInput/Textinput"
+import TextInput from "../../components/TextInput/TextInput"
 import Button from "../../components/Button/Button"
 
 export default function SignUp() {
