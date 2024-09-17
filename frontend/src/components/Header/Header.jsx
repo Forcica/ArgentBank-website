@@ -1,24 +1,55 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import logo from '../../assets/img/argentBankLogo.webp';
-import '../../assets/style/main.css';
+import { Link } from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux"
+import { setLogOut } from "../../redux/reducers/userAuthSlice"
+import { resetProfile } from "../../redux/reducers/profileSlice"
+import logo from "../../assets/img/argentBankLogo.webp"
 
-const Header = ({ isLoggedIn, userName }) => (
-  <nav className="main-nav">
-    <Link to="/" className="main-nav-logo">
-      <img src={logo} alt="Argent Bank Logo" className="main-nav-logo-image" />
-    </Link>
-    <div>
-      {isLoggedIn ? (
-        <>
-          <Link to="/profile" className="main-nav-item">{userName}</Link>
-          <Link to="/logout" className="main-nav-item">Sign Out</Link>
-        </>
-      ) : (
-        <Link to="/login" className="main-nav-item">Sign In</Link>
-      )}
-    </div>
-  </nav>
-);
+export default function Header() {
+   const token = useSelector(state => state.userAuth.token)
+   const profile = useSelector((state) => state.profile)
+   const dispatch = useDispatch()
 
-export default Header;
+   return (
+      <header>
+         <nav className="main-nav">
+               <Link
+                  className="main-nav-logo"
+                  to="./" >
+                  <img
+                     className="main-nav-logo-image"
+                     src={logo}
+                     alt="Argent Bank Logo" />
+                  <h1 className="sr-only">Argent Bank</h1>
+               </Link>
+               <div>
+                  {token && (
+                     <Link
+                           className="main-nav-item"
+                           to="./user">
+                           {profile.userName}
+                     </Link>
+                  )}
+                  <Link
+                     className="main-nav-item"
+                     to={token ? "./" : "./sign-in/"}
+                     onClick={() => {
+                           if (token) {
+                              dispatch(setLogOut({}))
+                              dispatch(resetProfile())
+                           }
+                     }}>
+                     <i className="fa fa-user-circle"></i>
+                     {token ? " Sign Out" : " Sign In"}
+                  </Link>
+                  {!token && (
+                     <Link
+                           className="main-nav-item"
+                           to="./sign-up">
+                           Sign Up
+                     </Link>
+                  )}
+               </div>
+         </nav>
+      </header>
+   )
+}
