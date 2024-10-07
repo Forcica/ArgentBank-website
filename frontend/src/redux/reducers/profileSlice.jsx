@@ -15,6 +15,9 @@ const profileSlice = createSlice({
          state.lastName = action.payload.data.body.lastName;
          state.userName = action.payload.data.body.userName;
       },
+      setEditProfile: (state, action) => {
+         state.userName = action.payload;   // Met à jour uniquement le userName
+      },
       resetProfile: (state) => {
          return profileSlice.getInitialState();
       },
