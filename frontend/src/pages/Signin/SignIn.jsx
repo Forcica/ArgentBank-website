@@ -9,6 +9,7 @@ export default function SignIn() {
    const [email, setEmail] = useState("")
    const [password, setPassword] = useState("")
    const [checkBox, setCheckBox] = useState(false)
+   const [error, setError] = useState(""); // Ajout de cette ligne pour l'affichage de l'erreur si identifiant incorrect au login
 
    const navigate = useNavigate()
    const dispatch = useDispatch()
@@ -26,7 +27,7 @@ export default function SignIn() {
          dispatch(setLogIn({ token }))
          navigate("/user")
       } catch (err) {
-         console.log(err)
+         setError("Identifiant ou mot de passe incorrect") // Ajout de cette ligne pour l'affichage de l'erreur si identifiant incorrect au login
       }
    }
 
@@ -63,6 +64,8 @@ export default function SignIn() {
                   </Button>
                </form>
          </section>
+         {/* Ajout de cette ligne pour l'affichage de l'erreur si identifiant incorrect au login */}
+         {error && <p style={{ color: 'red' }}>{error}</p>} 
       </main>
    )
 }
