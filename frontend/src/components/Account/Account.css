@@ -17,6 +17,7 @@
    font-size: 2.5rem;
    font-weight: bold;
 }
+
 .account-amount-description {
    margin: 0;
 }
@@ -41,6 +42,11 @@
    background-color: #00bc77;
    color: #fff;
 }
+
+.account-content-wrapper.cta a {
+   text-decoration: none;
+}
+
 @media (min-width: 720px) {
    .account {
       flex-direction: row;
