@@ -18,7 +18,7 @@ export default function App() {
 				<Route path="/sign-in" element={<SignIn />} />
 				<Route path="/user" element={token ? <User /> : <Navigate to="/sign-in" />} />
 				<Route path="/sign-up" element={<SignUp />} />
-            <Route path="/transactions" component={TransactionDetails} />
+				<Route path="/transactions" element={<TransactionDetails />} />
 				<Route path="*" element={<Home />} />
 			</Routes>
 			<Footer />
