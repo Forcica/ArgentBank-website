@@ -1,5 +1,5 @@
 const axios = require('axios')
-const signupApi = 'https://argentbank-website-cy5b.onrender.com/api/v1/user/signup'
+const signupApi = 'http://localhost:3001/api/v1/user/signup'
 
 const users = [
   {
@@ -18,19 +18,9 @@ const users = [
   }
 ]
 
-const createUser = async (user) => {
-  try {
-    const response = await axios.post(signupApi, user)
-    console.log(`User ${user.email} created successfully`)
-  } catch (error) {
-    console.error(`Error creating user ${user.email}:`, error.message)
-  }
-}
-
-const populateDb = async () => {
-  for (const user of users) {
-    await createUser(user)
-  }
-}
-
-populateDb()
+users.forEach(user => {
+  axios
+    .post(signupApi, user)
+    .then(response => console.log(response))
+    .catch(error => console.log(error))
+})
