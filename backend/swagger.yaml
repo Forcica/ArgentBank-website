@@ -1,280 +1,298 @@
-
-swagger: '2.0'
+swagger: "2.0"
 info:
-  title: Bank Argent API documentation
-  description: Contains all available API endpoints in this codebase
-  version: '1.0.0'
-  termsOfService: 'http://swagger.io/terms/'
+   title: Bank Argent API documentation
+   description: Contains all available API endpoints in this codebase
+   version: "1.0.0"
+   termsOfService: "http://swagger.io/terms/"
 host: localhost:3001
 basePath: /api/v1
 schemes:
-  - http
+   - http
 paths:
-  /user/login:
-    post:
-      tags:
-        - User Module
-      summary: Login
-      description: API for Login
-      parameters:
-        - in: body
-          name: body
-          description: Login Payload
-          required: true
-          schema:
-            $ref: '#/definitions/Login'
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Login Successfully
-          schema:
-            $ref: '#/definitions/LoginResponse'
-        '400':
-          description: Invalid Fields
-        '500':
-          description: Internal Server Error
-  /user/signup:
-    post:
-      tags:
-        - User Module
-      summary: Signup
-      description: API for Signup
-      parameters:
-        - in: body
-          name: body
-          description: Signup Payload
-          required: true
-          schema:
-            $ref: '#/definitions/User'
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Signup Successfully
-          schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
-          description: Invalid Fields
-        '500':
-          description: Internal Server Error
-  /user/profile:
-    get:
-      security:
-        - Bearer: []
-      tags:
-        - User Module
-      summary: User Profile API
-      description: API for fetching a user profile
-      responses:
-        '200':
-          description: User profile retrieved successfully
-          schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
-          description: Invalid Fields
-        '500':
-          description: Internal Server Error
-    put:
-      security:
-        - Bearer: []
-      tags:
-        - User Module
-      summary: User Profile API
-      description: API for updating a user profile
-      parameters:
-        - in: body
-          name: body
-          description: Update user profile attributes
-          required: true
-          schema:
-            $ref: '#/definitions/UserProfile'
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: User profile updated successfully
-          schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
-          description: Invalid Fields
-        '500':
-          description: Internal Server Error
-  /transactions:
-    get:
-      tags:
-        - Transactions
-      summary: Get all transactions
-      description: API to fetch all transactions for the current user
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Transactions retrieved successfully
-          schema:
+   /user/login:
+      post:
+         tags:
+            - User Module
+         summary: Login
+         description: API for Login
+         parameters:
+            - in: body
+              name: body
+              description: Login Payload
+              required: true
+              schema:
+                 $ref: "#/definitions/Login"
+         produces:
+            - application/json
+         responses:
+            "200":
+               description: Login Successfully
+               schema:
+                  $ref: "#/definitions/LoginResponse"
+            "400":
+               description: Invalid Fields
+            "500":
+               description: Internal Server Error
+   /user/signup:
+      post:
+         tags:
+            - User Module
+         summary: Signup
+         description: API for Signup
+         parameters:
+            - in: body
+              name: body
+              description: Signup Payload
+              required: true
+              schema:
+                 $ref: "#/definitions/User"
+         produces:
+            - application/json
+         responses:
+            "200":
+               description: Signup Successfully
+               schema:
+                  $ref: "#/definitions/ApiResponse"
+            "400":
+               description: Invalid Fields
+            "500":
+               description: Internal Server Error
+   /user/profile:
+      get:
+         security:
+            - Bearer: []
+         tags:
+            - User Module
+         summary: User Profile API
+         description: API for fetching a user profile
+         responses:
+            "200":
+               description: User profile retrieved successfully
+               schema:
+                  $ref: "#/definitions/ApiResponse"
+            "400":
+               description: Invalid Fields
+            "500":
+               description: Internal Server Error
+      put:
+         security:
+            - Bearer: []
+         tags:
+            - User Module
+         summary: User Profile API
+         description: API for updating a user profile
+         parameters:
+            - in: body
+              name: body
+              description: Update user profile attributes
+              required: true
+              schema:
+                 $ref: "#/definitions/UserProfile"
+         produces:
+            - application/json
+         responses:
+            "200":
+               description: User profile updated successfully
+               schema:
+                  $ref: "#/definitions/ApiResponse"
+            "400":
+               description: Invalid Fields
+            "500":
+               description: Internal Server Error
+   /transactions:
+      get:
+         tags:
+            - Transactions
+         summary: Get all transactions for the current month grouped by account
+         description: API to fetch all transactions for the current month, grouped by account
+         produces:
+            - application/json
+         responses:
+            "200":
+               description: Transactions retrieved successfully
+               schema:
+                  type: array
+                  items:
+                     $ref: "#/definitions/GroupedTransactions"
+            "500":
+               description: Internal Server Error
+   /transactions/{id}:
+      get:
+         tags:
+            - Transactions
+         summary: Get transaction details
+         description: API to fetch details of a specific transaction
+         parameters:
+            - in: path
+              name: id
+              required: true
+              description: Transaction ID
+              type: string
+         produces:
+            - application/json
+         responses:
+            "200":
+               description: Transaction details retrieved successfully
+               schema:
+                  $ref: "#/definitions/TransactionDetails"
+            "404":
+               description: Transaction not found
+            "500":
+               description: Internal Server Error
+      put:
+         tags:
+            - Transactions
+         summary: Update transaction details
+         description: API to update specific transaction details
+         parameters:
+            - in: path
+              name: id
+              required: true
+              description: Transaction ID
+              type: string
+            - in: body
+              name: body
+              description: Fields to update (only category and note are modifiable)
+              required: true
+              schema:
+                 type: object
+                 properties:
+                    category:
+                       type: string
+                    note:
+                       type: string
+                 required:
+                    - category
+                    - note
+         produces:
+            - application/json
+         responses:
+            "200":
+               description: Transaction updated successfully
+               schema:
+                  $ref: "#/definitions/ApiResponse"
+            "400":
+               description: Invalid Fields
+            "404":
+               description: Transaction not found
+            "500":
+               description: Internal Server Error
+   /transactions/account-id:
+      get:
+         tags:
+            - Transactions
+         summary: Get transactions by account ID
+         description: API to fetch transactions by account ID
+         parameters:
+            - in: query
+              name: accountId
+              required: true
+              description: Account ID
+              type: string
+         produces:
+            - application/json
+         responses:
+            "200":
+               description: Transactions retrieved successfully
+               schema:
+                  type: array
+                  items:
+                     $ref: "#/definitions/Transaction"
+            "404":
+               description: Account not found
+            "500":
+               description: Internal Server Error
+
+definitions:
+   Login:
+      type: object
+      properties:
+         email:
+            type: string
+         password:
+            type: string
+   LoginResponse:
+      type: object
+      properties:
+         token:
+            type: string
+   User:
+      type: object
+      properties:
+         email:
+            type: string
+         password:
+            type: string
+         firstName:
+            type: string
+         lastName:
+            type: string
+   ApiResponse:
+      type: object
+      properties:
+         message:
+            type: string
+   UserProfile:
+      type: object
+      properties:
+         firstName:
+            type: string
+         lastName:
+            type: string
+   Transaction:
+      type: object
+      properties:
+         id:
+            type: string
+            readOnly: true
+         date:
+            type: string
+            readOnly: true
+         description:
+            type: string
+            readOnly: true
+         amount:
+            type: number
+            readOnly: true
+         balance:
+            type: number
+            readOnly: true
+         category:
+            type: string
+         note:
+            type: string
+   GroupedTransactions:
+      type: object
+      properties:
+         accountId:
+            type: string
+            readOnly: true
+         transactions:
             type: array
             items:
-              $ref: '#/definitions/Transaction'
-        '500':
-          description: Internal Server Error
-    post:
-      tags:
-        - Transactions
-      summary: Create a new transaction
-      description: API to create a new transaction
-      parameters:
-        - in: body
-          name: body
-          description: Transaction object
-          required: true
-          schema:
-            $ref: '#/definitions/Transaction'
-      produces:
-        - application/json
-      responses:
-        '201':
-          description: Transaction created successfully
-        '400':
-          description: Invalid data
-        '500':
-          description: Internal Server Error
-  /transactions/{id}:
-    get:
-      tags:
-        - Transactions
-      summary: Get transaction by ID
-      description: API to fetch a transaction by its ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-          description: Transaction ID
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Transaction retrieved successfully
-          schema:
-            $ref: '#/definitions/Transaction'
-        '404':
-          description: Transaction not found
-        '500':
-          description: Internal Server Error
-    put:
-      tags:
-        - Transactions
-      summary: Update transaction by ID
-      description: API to update an existing transaction
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-          description: Transaction ID
-        - in: body
-          name: body
-          description: Updated transaction object
-          required: true
-          schema:
-            $ref: '#/definitions/Transaction'
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Transaction updated successfully
-        '400':
-          description: Invalid data
-        '404':
-          description: Transaction not found
-        '500':
-          description: Internal Server Error
-    delete:
-      tags:
-        - Transactions
-      summary: Delete transaction by ID
-      description: API to delete a transaction by its ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-          description: Transaction ID
-      produces:
-        - application/json
-      responses:
-        '204':
-          description: Transaction deleted successfully
-        '404':
-          description: Transaction not found
-        '500':
-          description: Internal Server Error
-securityDefinitions:
-  Bearer:
-    type: apiKey
-    name: Authorization
-    in: header
-definitions:
-  User:
-    properties:
-      email:
-        type: string
-        description: user email
-      password:
-        type: string
-        description: user password
-      firstName:
-        type: string
-        description: user first name
-      lastName:
-        type: string
-        description: user last name
-      userName:
-        type: string
-        description: user public name
-  Login:
-    properties:
-      email:
-        type: string
-        description: user email
-      password:
-        type: string
-        description: user password
-  ApiResponse:
-    type: object
-    properties:
-      status:
-        type: integer
-      message:
-        type: string
-      body:
-        type: object
-        properties:
-          id:
+               $ref: "#/definitions/Transaction"
+   TransactionDetails:
+      type: object
+      properties:
+         id:
             type: string
-          email:
+            readOnly: true
+         date:
             type: string
-  LoginResponse:
-    type: object
-    properties:
-      token:
-        type: string
-  UserProfile:
-    type: object
-    properties:
-      userName:
-        type: string
-  Transaction:
-    type: object
-    properties:
-      id:
-        type: string
-      date:
-        type: string
-        format: date-time
-      amount:
-        type: number
-      description:
-        type: string
-      userId:
-        type: string
+            readOnly: true
+         description:
+            type: string
+            readOnly: true
+         amount:
+            type: number
+            readOnly: true
+         balance:
+            type: number
+            readOnly: true
+         transactionType:
+            type: string
+            readOnly: true
+         category:
+            type: string
+         note:
+            type: string
