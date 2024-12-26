@@ -40,7 +40,7 @@ Pour mener à bien ce projet, j'ai utilisé :
 
 #### Frontend :
 
-```bash
+```shell
 cd frontend
 npx create-react-app NomduProjet  # Une seule fois pour initialiser l'application
 npm install
@@ -81,6 +81,7 @@ J'ai implémenté les fonctionnalités suivantes :
 
 -  Système complet de connexion et déconnexion des utilisateurs
 -  Interface de consultation des informations du profil utilisateur
+-  Intégration de Redux pour une gestion efficace et prévisible de l'état global de l'application, facilitant la maintenance et l'ajout de nouvelles fonctionnalités.
 -  Page de consultation des détails des transactions (front-end)
 -  Navigation fluide avec **React Router**
 
