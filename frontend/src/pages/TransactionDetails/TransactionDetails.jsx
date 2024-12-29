@@ -1,33 +1,52 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import './TransactionDetails.css';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserTransactions } from "../../redux/actions/apiActions";
+import "./TransactionDetails.css";
 
 const TransactionDetails = () => {
-  const transactions = useSelector((state) => state.profile.transactions);
+	const dispatch = useDispatch();
+	const token = useSelector((state) => state.userAuth.token);
+	const [transactions, setTransactions] = useState([]);
+	const [error, setError] = useState("");
 
-  if (!transactions || transactions.length === 0) {
-    return (
-      <div className="transaction-details">
-        <h2>Détails des opérations</h2>
-        <p>Aucune transaction trouvée.</p>
-      </div>
-    );
-  }
+	useEffect(() => {
+		const loadTransactions = async () => {
+			const result = await dispatch(fetchUserTransactions(token));
+			if (result.success) {
+				setTransactions(result.data);
+			} else {
+				setError(result.error);
+			}
+		};
 
-  return (
-    <div className="transaction-details">
-      <h2>Détails des opérations</h2>
-      <ul className="transaction-list">
-        {transactions.map((transaction) => (
-          <li key={transaction.id}>
-            <p className="transaction-date">Date : {transaction.date}</p>
-            <p className="transaction-amount">Montant : {transaction.amount}</p>
-            <p className="transaction-description">Description : {transaction.description}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+		loadTransactions();
+	}, [dispatch, token]);
+
+	return (
+		<main className="main bg-dark">
+			<h2>Transactions</h2>
+			{error && <div className="error-message">{error}</div>}
+			{transactions && transactions.length > 0 ? (
+				<ul className="transaction-list">
+					{transactions.map((transaction) => (
+						<li key={transaction.id}>
+							<p className="transaction-date">
+								Date : {transaction.date}
+							</p>
+							<p className="transaction-amount">
+								Montant : {transaction.amount}
+							</p>
+							<p className="transaction-description">
+								Description : {transaction.description}
+							</p>
+						</li>
+					))}
+				</ul>
+			) : (
+				<p>Aucune transaction trouvée.</p>
+			)}
+		</main>
+	);
 };
 
 export default TransactionDetails;
