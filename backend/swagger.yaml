@@ -99,29 +99,86 @@ paths:
                description: Invalid Fields
             "500":
                description: Internal Server Error
-   /transactions:
+   /accounts:
+      get:
+         tags:
+            - User Module
+         security:
+            - Bearer: []
+         summary: Get all user accounts
+         description: API for fetching all user accounts
+         responses:
+            "200":
+               description: User accounts retrieved successfully
+               schema:
+                  type: array
+                  items:
+                     $ref: "#/definitions/Account"
+            "401":
+               description: Unauthorized
+   /accounts/{account-id}:
+      get:
+         tags:
+            - User Module
+         security:
+            - Bearer: []
+         summary: Get specific account
+         description: API for fetching a specific user account
+         parameters:
+            - in: path
+              name: account-id
+              required: true
+              description: Account ID
+              type: string
+         responses:
+            "200":
+               description: Account retrieved successfully
+               schema:
+                  $ref: "#/definitions/Account"
+            "404":
+               description: Account not found
+            "401":
+               description: Unauthorized
+   /accounts/{account-id}/transactions:
       get:
          tags:
             - Transactions
-         summary: Get all transactions for the current month grouped by account
-         description: API to fetch all transactions for the current month, grouped by account
-         produces:
-            - application/json
+         summary: Get all transactions for a specific account
+         description: Retrieves transactions for a specific account. By default, returns current month's transactions.
+         parameters:
+            - in: path
+              name: account-id
+              required: true
+              description: Account ID
+              type: string
+            - in: query
+              name: month
+              required: false
+              description: Month for which to retrieve transactions (format YYYY-MM). Defaults to current month if not specified.
+              type: string
          responses:
             "200":
                description: Transactions retrieved successfully
                schema:
                   type: array
                   items:
-                     $ref: "#/definitions/GroupedTransactions"
+                     $ref: "#/definitions/Transaction"
+            "400":
+               description: Invalid month format
+            "401":
+               description: Unauthorized access
+            "403":
+               description: Forbidden - Account belongs to another user
+            "404":
+               description: Account not found
             "500":
                description: Internal Server Error
-   /transactions/{id}:
+   /transaction/{id}:
       get:
          tags:
             - Transactions
          summary: Get transaction details
-         description: API to fetch details of a specific transaction
+         description: Retrieves detailed information about a specific transaction
          parameters:
             - in: path
               name: id
@@ -135,6 +192,10 @@ paths:
                description: Transaction details retrieved successfully
                schema:
                   $ref: "#/definitions/TransactionDetails"
+            "401":
+               description: Unauthorized access
+            "403":
+               description: Forbidden - Transaction belongs to another user
             "404":
                description: Transaction not found
             "500":
@@ -142,8 +203,8 @@ paths:
       put:
          tags:
             - Transactions
-         summary: Update transaction details
-         description: API to update specific transaction details
+         summary: Update transaction information
+         description: Modify category and notes of a specific transaction. Other fields cannot be modified.
          parameters:
             - in: path
               name: id
@@ -151,55 +212,31 @@ paths:
               description: Transaction ID
               type: string
             - in: body
-              name: body
-              description: Fields to update (only category and note are modifiable)
+              name: transactionUpdate
               required: true
+              description: Fields to update
               schema:
                  type: object
                  properties:
                     category:
                        type: string
-                    note:
+                       description: New category for the transaction
+                    notes:
                        type: string
-                 required:
-                    - category
-                    - note
-         produces:
-            - application/json
+                       description: New notes for the transaction
          responses:
             "200":
                description: Transaction updated successfully
                schema:
-                  $ref: "#/definitions/ApiResponse"
+                  $ref: "#/definitions/TransactionDetails"
             "400":
-               description: Invalid Fields
+               description: Invalid input data
+            "401":
+               description: Unauthorized access
+            "403":
+               description: Forbidden - Transaction belongs to another user
             "404":
                description: Transaction not found
-            "500":
-               description: Internal Server Error
-   /transactions/account-id:
-      get:
-         tags:
-            - Transactions
-         summary: Get transactions by account ID
-         description: API to fetch transactions by account ID
-         parameters:
-            - in: query
-              name: accountId
-              required: true
-              description: Account ID
-              type: string
-         produces:
-            - application/json
-         responses:
-            "200":
-               description: Transactions retrieved successfully
-               schema:
-                  type: array
-                  items:
-                     $ref: "#/definitions/Transaction"
-            "404":
-               description: Account not found
             "500":
                description: Internal Server Error
 
@@ -279,20 +316,29 @@ definitions:
             readOnly: true
          date:
             type: string
+            format: date-time
             readOnly: true
          description:
             type: string
             readOnly: true
          amount:
             type: number
+            format: double
             readOnly: true
-         balance:
-            type: number
-            readOnly: true
-         transactionType:
+         type:
             type: string
+            enum: [CREDIT, DEBIT]
             readOnly: true
          category:
             type: string
-         note:
+            description: Category of the transaction (can be modified)
+         notes:
+            type: string
+            description: Additional notes about the transaction (can be modified)
+   Account:
+      type: object
+      properties:
+         id:
+            type: string
+         name:
             type: string
